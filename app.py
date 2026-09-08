@@ -50,7 +50,99 @@ st.markdown("""
 
 </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+<style>
 
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+section[data-testid="stSidebar"] {
+    border-right: 1px solid rgba(128,128,128,0.2);
+}
+
+
+/* Sidebar headings */
+
+section[data-testid="stSidebar"] h2 {
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+section[data-testid="stSidebar"] h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 18px;
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+section[data-testid="stSidebar"] button {
+    border-radius: 8px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+section[data-testid="stSidebar"] input {
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   MULTISELECT
+   ========================================================= */
+
+section[data-testid="stSidebar"] div[data-baseweb="select"] {
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   RADIO BUTTONS
+   ========================================================= */
+
+section[data-testid="stSidebar"] label {
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   SLIDER
+   ========================================================= */
+
+section[data-testid="stSidebar"] [data-testid="stSlider"] {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+
+/* =========================================================
+   SUCCESS BOX
+   ========================================================= */
+
+section[data-testid="stSidebar"] .stAlert {
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   DIVIDERS
+   ========================================================= */
+
+section[data-testid="stSidebar"] hr {
+    margin: 15px 0;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # ============================================================
 # LOAD DATA
