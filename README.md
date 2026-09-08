@@ -162,7 +162,7 @@ streamlit run app.py
 
 The dashboard will open in your browser at:
 
-http://localhost:8501
+https://f1drivers-dabczzsj82qyf87urqdjrf.streamlit.app/
 
 ---
 
