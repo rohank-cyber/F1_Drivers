@@ -89,7 +89,269 @@ st.markdown(
 # ============================================================
 
 st.sidebar.header("🔎 Dashboard Filters")
+# ============================================================
+# 🚦 ADVANCED F1 FILTER PANEL
+# ============================================================
 
+st.sidebar.markdown("""
+<div style="
+    text-align:center;
+    padding:10px 0 20px 0;
+">
+    <div style="font-size:42px;">🏎️</div>
+    <h2 style="margin:0;">RACE CONTROL</h2>
+    <p style="margin:5px 0; opacity:0.7;">
+        Driver Analytics Filters
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# RESET FILTERS
+# ============================================================
+
+if st.sidebar.button(
+    "🔄 Reset All Filters",
+    use_container_width=True
+):
+    st.session_state["nationality_filter"] = []
+    st.session_state["decade_filter"] = []
+    st.session_state["status_filter"] = "All"
+    st.session_state["champion_filter"] = "All"
+    st.session_state["driver_search"] = ""
+    st.rerun()
+
+
+# ============================================================
+# DRIVER SEARCH
+# ============================================================
+
+st.sidebar.markdown("### 🔍 Driver Search")
+
+driver_search = st.sidebar.text_input(
+    "Search driver",
+    placeholder="e.g. Hamilton...",
+    key="driver_search"
+)
+
+
+# ============================================================
+# NATIONALITY
+# ============================================================
+
+st.sidebar.markdown("### 🌍 Nationality")
+
+nationalities = sorted(
+    df["Nationality"].dropna().unique()
+)
+
+selected_nationality = st.sidebar.multiselect(
+    "Select nationality",
+    nationalities,
+    key="nationality_filter",
+    placeholder="All nationalities"
+)
+
+
+# ============================================================
+# DECADE
+# ============================================================
+
+st.sidebar.markdown("### 📅 Racing Era")
+
+decades = sorted(
+    df["Decade"].dropna().unique()
+)
+
+selected_decades = st.sidebar.multiselect(
+    "Select decade",
+    decades,
+    key="decade_filter",
+    placeholder="All decades"
+)
+
+
+# ============================================================
+# DRIVER STATUS
+# ============================================================
+
+st.sidebar.markdown("### 🟢 Driver Status")
+
+status = st.sidebar.radio(
+    "Status",
+    ["All", "Active", "Retired"],
+    horizontal=True,
+    key="status_filter"
+)
+
+
+# ============================================================
+# CHAMPIONSHIP STATUS
+# ============================================================
+
+st.sidebar.markdown("### 🏆 Championship")
+
+champion_filter = st.sidebar.radio(
+    "Championship Status",
+    ["All", "Champion", "Non-Champion"],
+    horizontal=True,
+    key="champion_filter"
+)
+
+
+# ============================================================
+# PERFORMANCE FILTER
+# ============================================================
+
+st.sidebar.markdown("### 📊 Performance")
+
+min_wins, max_wins = st.sidebar.slider(
+    "Race Wins",
+    min_value=int(df["Race_Wins"].min()),
+    max_value=int(df["Race_Wins"].max()),
+    value=(
+        int(df["Race_Wins"].min()),
+        int(df["Race_Wins"].max())
+    )
+)
+
+
+# ============================================================
+# APPLY FILTERS
+# ============================================================
+
+filtered_df = df.copy()
+
+
+# Driver search
+if driver_search:
+
+    filtered_df = filtered_df[
+        filtered_df["Driver"]
+        .str.contains(
+            driver_search,
+            case=False,
+            na=False
+        )
+    ]
+
+
+# Nationality
+if selected_nationality:
+
+    filtered_df = filtered_df[
+        filtered_df["Nationality"]
+        .isin(selected_nationality)
+    ]
+
+
+# Decade
+if selected_decades:
+
+    filtered_df = filtered_df[
+        filtered_df["Decade"]
+        .isin(selected_decades)
+    ]
+
+
+# Driver status
+if status == "Active":
+
+    filtered_df = filtered_df[
+        filtered_df["Active"] == True
+    ]
+
+elif status == "Retired":
+
+    filtered_df = filtered_df[
+        filtered_df["Active"] == False
+    ]
+
+
+# Championship
+if champion_filter == "Champion":
+
+    filtered_df = filtered_df[
+        filtered_df["Champion"] == True
+    ]
+
+elif champion_filter == "Non-Champion":
+
+    filtered_df = filtered_df[
+        filtered_df["Champion"] == False
+    ]
+
+
+# Race wins
+filtered_df = filtered_df[
+    (filtered_df["Race_Wins"] >= min_wins) &
+    (filtered_df["Race_Wins"] <= max_wins)
+]
+
+
+# ============================================================
+# FILTER SUMMARY
+# ============================================================
+
+st.sidebar.divider()
+
+st.sidebar.markdown("### 📡 Filter Status")
+
+st.sidebar.success(
+    f"🏁 {len(filtered_df):,} drivers found"
+)
+
+st.sidebar.caption(
+    f"Showing {len(filtered_df):,} of {len(df):,} total drivers"
+)
+
+
+# ============================================================
+# ACTIVE FILTER TAGS
+# ============================================================
+
+active_filters = []
+
+if driver_search:
+    active_filters.append(f"🔍 {driver_search}")
+
+if selected_nationality:
+    active_filters.append(
+        f"🌍 {len(selected_nationality)} nationalities"
+    )
+
+if selected_decades:
+    active_filters.append(
+        f"📅 {len(selected_decades)} decades"
+    )
+
+if status != "All":
+    active_filters.append(f"🟢 {status}")
+
+if champion_filter != "All":
+    active_filters.append(f"🏆 {champion_filter}")
+
+if min_wins > df["Race_Wins"].min() or \
+   max_wins < df["Race_Wins"].max():
+
+    active_filters.append(
+        f"🥇 Wins: {min_wins}–{max_wins}"
+    )
+
+
+if active_filters:
+
+    st.sidebar.markdown("**Active Filters**")
+
+    for item in active_filters:
+        st.sidebar.info(item)
+
+else:
+
+    st.sidebar.caption(
+        "No filters applied • Showing all drivers"
+    )
 
 # Nationality
 nationalities = sorted(df["Nationality"].dropna().unique())
